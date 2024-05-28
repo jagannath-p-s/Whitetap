@@ -22,8 +22,10 @@ function UserHome() {
 
   const handleViewCard = () => {
     const userId = userData.id;
-    navigate(`/profile/${userId}/`);
+    const url = `${window.location.origin}/profile/${userId}/`;
+    window.open(url, '_blank');
   };
+  
   
 
   const handleViewInsights = () => {

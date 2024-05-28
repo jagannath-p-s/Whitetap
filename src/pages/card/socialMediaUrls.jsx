@@ -19,15 +19,16 @@ async function fetchSocialMediaUserData(userId) {
 
 const extractUserIdFromURL = () => {
   const url = window.location.pathname;
-  const segments = url.split('/');
-  const userId = segments[segments.length - 1];
-  // Check if userId is empty or not a number
+  const profileIndex = url.indexOf('/profile/');
+  if (profileIndex === -1) {
+    return 1; // Default userId to 1 if '/profile/' is not found
+  }
+  const userId = url.substring(profileIndex + 9).replace(/\/$/, ''); // Remove trailing slash if exists
   if (!userId || isNaN(userId)) {
     return 1; // Default userId to 1 if not provided or not a number
   }
-  return userId;
+  return parseInt(userId, 10);
 };
-
 
 async function populateSocialMediaUrls() {
   const userId = extractUserIdFromURL();
@@ -49,15 +50,13 @@ async function populateSocialMediaUrls() {
       email: userData.email ? `mailto:${userData.email}` : '',
       maps: userData.maps,
       backgroundImage: userData.background_image,
-      drive:userData.drive_link
+      drive: userData.drive_link
     };
     return socialMediaUrls;
   } else {
     // Handle error or return default values
     return null;
   }
-
-
 }
 
 const socialMediaUrls = await populateSocialMediaUrls();
