@@ -10,9 +10,9 @@ function ViewUserQR({ isOpen, setIsOpen, userId }) {
   // Function to extract base URL from current URL
   const getBaseURL = () => {
     const currentURL = window.location.href;
-    const matches = currentURL.match(/^(https?:\/\/[^/]+\/profile\/)/);
-    if (matches && matches[1]) {
-      return matches[1];
+    const domainIndex = currentURL.indexOf('.com/');
+    if (domainIndex !== -1) {
+      return currentURL.substring(0, domainIndex + 5); // Include '.com/'
     } else {
       // Default base URL if pattern not found
       return "https://default.baseurl.com/profile/";
@@ -48,19 +48,20 @@ function ViewUserQR({ isOpen, setIsOpen, userId }) {
     }
   }, [userId]);
 
+  const fullURL = `${baseURL}${userId}`;
+  const downloadRef = useRef(null);
+
   const handleDownload = () => {
-    const canvas = downloadRef.current.querySelector("canvas");
-    if (canvas) {
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
-      link.download = `${userName}_QR.png`;
-      link.click();
+    if (downloadRef.current) {
+      const canvas = downloadRef.current.querySelector("canvas");
+      if (canvas) {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = `${userName}_QR.png`;
+        link.click();
+      }
     }
   };
-
-  const fullURL = `${baseURL}${userId}`;
-
-  const downloadRef = useRef(null);
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
