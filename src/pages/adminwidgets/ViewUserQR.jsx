@@ -5,24 +5,9 @@ import supabase from "../../supabase";
 
 function ViewUserQR({ isOpen, setIsOpen, userId }) {
   const [userName, setUserName] = useState("");
-  const [baseURL, setBaseURL] = useState("");
-
-  // Function to extract base URL from current URL
-  const getBaseURL = () => {
-    const currentURL = window.location.href;
-    const domainIndex = currentURL.indexOf('.com/');
-    if (domainIndex !== -1) {
-      return currentURL.substring(0, domainIndex + 5); // Include '.com/'
-    } else {
-      // Default base URL if pattern not found
-      return "https://default.baseurl.com/profile/";
-    }
-  };
-
-  useEffect(() => {
-    // Set base URL when component mounts
-    setBaseURL(getBaseURL());
-  }, []);
+  const baseURL = "https://main.d3nfynyvx7r4sc.amplifyapp.com/profile/";
+  const fullURL = `${baseURL}${userId}`;
+  const downloadRef = useRef(null);
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -47,9 +32,6 @@ function ViewUserQR({ isOpen, setIsOpen, userId }) {
       fetchUserName();
     }
   }, [userId]);
-
-  const fullURL = `${baseURL}${userId}`;
-  const downloadRef = useRef(null);
 
   const handleDownload = () => {
     if (downloadRef.current) {
