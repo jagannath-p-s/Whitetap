@@ -5,9 +5,24 @@ import supabase from "../../supabase";
 
 function ViewUserQR({ isOpen, setIsOpen, userId }) {
   const [userName, setUserName] = useState("");
-  const baseURL = "https://main.d29jfubysskuax.amplifyapp.com/";
-  const fullURL = `${baseURL}${userId}`;
-  const downloadRef = useRef(null);
+  const [baseURL, setBaseURL] = useState("");
+
+  // Function to extract base URL from current URL
+  const getBaseURL = () => {
+    const currentURL = window.location.href;
+    const matches = currentURL.match(/^(https?:\/\/[^/]+\/profile\/)/);
+    if (matches && matches[1]) {
+      return matches[1];
+    } else {
+      // Default base URL if pattern not found
+      return "https://default.baseurl.com/profile/";
+    }
+  };
+
+  useEffect(() => {
+    // Set base URL when component mounts
+    setBaseURL(getBaseURL());
+  }, []);
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -34,16 +49,18 @@ function ViewUserQR({ isOpen, setIsOpen, userId }) {
   }, [userId]);
 
   const handleDownload = () => {
-    if (downloadRef.current) {
-      const canvas = downloadRef.current.querySelector("canvas");
-      if (canvas) {
-        const link = document.createElement("a");
-        link.href = canvas.toDataURL("image/png");
-        link.download = `${userName}_QR.png`;
-        link.click();
-      }
+    const canvas = downloadRef.current.querySelector("canvas");
+    if (canvas) {
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = `${userName}_QR.png`;
+      link.click();
     }
   };
+
+  const fullURL = `${baseURL}${userId}`;
+
+  const downloadRef = useRef(null);
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
