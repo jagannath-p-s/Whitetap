@@ -4,9 +4,10 @@ import Header from '../partials/Header';
 import HeroHome from '../partials/HeroHome';
 import FeaturesHome from '../partials/Features';
 import FeaturesBlocks from '../partials/FeaturesBlocks';
-import Testimonials from '../partials/Testimonials';
+import Products from '../partials/Products';
 import Newsletter from '../partials/Newsletter';
 import Footer from '../partials/Footer';
+
 
 
 function Home() {
@@ -23,7 +24,7 @@ function Home() {
         <HeroHome />
         <FeaturesHome />
         <FeaturesBlocks />
-        <Testimonials />
+        <Products />
         <Newsletter />
 
       </main>

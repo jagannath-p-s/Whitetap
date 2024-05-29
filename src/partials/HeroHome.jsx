@@ -1,35 +1,39 @@
-// tailwind-landing-page-template-1.3.3/src/partials/HeroHome.jsx
 import React, { useState, useEffect, useRef } from "react";
-import Modal from "../utils/Modal";
-
-import HeroImage from "../images/hero-image.png";
-import iPhoneImage from "../images/iPhone.svg"; // Import iPhone SVG image
-import gifImage from "../../public/videos/video.gif"; // Import GIF image
+import gifImage from "../images/videos/video.gif"; // Import GIF image
+import iPhoneImage from "../images/whitetap/iPhone.svg"; // Standard import for iPhone SVG image
 
 function HeroHome() {
   const [isMobileView, setIsMobileView] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isIntersecting, setIsIntersecting] = useState(false);
   const heroSectionRef = useRef(null);
+  const observer = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobileView(window.innerWidth < 768);
     };
 
-    const handleScroll = () => {
-      if (heroSectionRef.current) {
-        const { top } = heroSectionRef.current.getBoundingClientRect();
-        setIsScrolled(top < 0);
-      }
+    const handleIntersection = (entries) => {
+      const [entry] = entries;
+      setIsIntersecting(entry.isIntersecting);
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
-    window.addEventListener("scroll", handleScroll);
-    
+
+    observer.current = new IntersectionObserver(handleIntersection, {
+      threshold: 0.1,
+    });
+
+    if (heroSectionRef.current) {
+      observer.current.observe(heroSectionRef.current);
+    }
+
     return () => {
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("scroll", handleScroll);
+      if (observer.current && heroSectionRef.current) {
+        observer.current.unobserve(heroSectionRef.current);
+      }
     };
   }, []);
 
@@ -72,14 +76,14 @@ function HeroHome() {
           {/* Section header */}
           <div className="text-center pb-12 md:pb-16">
             <h1
-              className="text-5xl md:text-6xl font-extrabold leading-tighter tracking-tighter mb-4"
+              className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tighter tracking-tighter mb-4 text-gray-900"
               data-aos="zoom-y-out"
             >
               Welcome to Your NFC Card Profile
             </h1>
             <div className="max-w-3xl mx-auto">
               <p
-                className="text-xl text-gray-600 mb-8"
+                className="text-lg md:text-xl text-gray-600 mb-8"
                 data-aos="zoom-y-out"
                 data-aos-delay="150"
               >
@@ -113,7 +117,7 @@ function HeroHome() {
           {/* Hero image and iPhone SVG */}
           <div
             className={`relative flex flex-col sm:flex-row items-center transition-opacity duration-500 ${
-              isScrolled ? "opacity-100" : "opacity-0"
+              isIntersecting ? "opacity-100" : "opacity-0"
             }`}
           >
             {/* iPhone SVG */}
@@ -123,15 +127,17 @@ function HeroHome() {
               width="264"
               height="464"
               alt="iPhone"
+              loading="lazy" // Lazy loading attribute for better performance
             />
             {/* GIF image */}
             {!isMobileView && (
               <img
-                className="mx-auto w-3/4"
+                className="mx-auto w-full sm:w-3/4 lg:w-1/2"
                 src={gifImage}
                 width="auto"
                 height="auto"
                 alt="GIF"
+                loading="lazy" // Lazy loading attribute for better performance
               />
             )}
           </div>
@@ -139,12 +145,13 @@ function HeroHome() {
           {isMobileView && (
             <img
               className={`mx-auto mb-8 transition-opacity duration-500 ${
-                isScrolled ? "opacity-100" : "opacity-0"
+                isIntersecting ? "opacity-100" : "opacity-0"
               }`}
               src={gifImage}
               width="auto"
               height="auto"
               alt="GIF"
+              loading="lazy" // Lazy loading attribute for better performance
             />
           )}
         </div>
