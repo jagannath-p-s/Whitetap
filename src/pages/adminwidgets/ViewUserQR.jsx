@@ -5,7 +5,7 @@ import supabase from "../../supabase";
 
 function ViewUserQR({ isOpen, setIsOpen, userId }) {
   const [userName, setUserName] = useState("");
-  const baseURL = "https://main.d3nfynyvx7r4sc.amplifyapp.com/profile/";
+  const baseURL = "https://www.thewhitetap.com/profile/";
   const fullURL = `${baseURL}${userId}`;
   const downloadRef = useRef(null);
 
