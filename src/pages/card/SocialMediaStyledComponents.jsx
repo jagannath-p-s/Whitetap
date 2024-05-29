@@ -5,7 +5,7 @@ import styled, { keyframes } from 'styled-components';
 
 // Styled components for social media links container, wrapper, and image
 export const Sociallinks = styled.div`
-  max-width: 400px;
+  max-width: 450px;
   display: flex;
   flex-wrap: wrap;
   padding: 10px;
@@ -24,8 +24,8 @@ export const Wrapper = styled.div`
   border-radius: 5px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   margin: 5px;
-  width: calc(25% - 2%);
-  height: 68px;
+  width: calc(29%);
+ 
   padding: 10px;
   display: flex;
   justify-content: center;

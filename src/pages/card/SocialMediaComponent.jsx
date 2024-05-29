@@ -35,7 +35,7 @@ const SocialMediaComponent = () => {
       )}
       {socialMediaUrls.whatsapp && (
         <Wrapper>
-          <a href={`https://wa.me/${socialMediaUrls.whatsapp}`} onClick={() => openURL(socialMediaUrls.whatsapp, 'whatsapp', socialMediaDataId)}>
+          <a href={`${socialMediaUrls.whatsapp}`} onClick={() => openURL(socialMediaUrls.whatsapp, 'whatsapp', socialMediaDataId)}>
             <Image src={whatsappIcon} alt="WhatsApp" height={54} />
           </a>
         </Wrapper>
