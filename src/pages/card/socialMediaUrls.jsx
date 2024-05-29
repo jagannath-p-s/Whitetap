@@ -39,7 +39,7 @@ async function populateSocialMediaUrls() {
       name: userData.name,
       designation: userData.designation,
       phone: userData.phone ? `tel:${userData.phone}` : '',
-      whatsapp: userData.whatsapp,
+      whatsapp: userData.whatsapp ? `https://api.whatsapp.com/send/?phone=${userData.whatsapp}` : '',
       website: userData.website,
       facebook: userData.facebook,
       instagram: userData.instagram,
