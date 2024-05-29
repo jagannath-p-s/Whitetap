@@ -16,6 +16,27 @@ import Mapicon from './images/mapicon.svg';
 import supabase from '../../supabase';
 import { openURL } from './openURL';
 
+function openWebsiteInNewTab(url) {
+  try {
+    // Find the index of "www"
+    const wwwIndex = url.indexOf('www');
+
+    // Extract the part of the URL after "www"
+    const domain = url.substring(wwwIndex);
+
+    // Prepend "http://" to the domain
+    const newUrl = 'http://' + domain;
+
+    // Open the new URL in a new tab
+    window.open(newUrl, '_blank');
+  } catch (error) {
+    console.error('Error opening URL in new tab:', error);
+  }
+}
+
+
+
+
 
 
 const SocialMediaComponent = () => {
@@ -41,11 +62,22 @@ const SocialMediaComponent = () => {
         </Wrapper>
       )}
       {socialMediaUrls.website && (
-        <Wrapper>
-          <a href={socialMediaUrls.website} target="_blank" rel="noopener noreferrer" onClick={() => openURL(socialMediaUrls.website, 'website', socialMediaDataId)}>
-            <Image src={browseIcon} alt="Website" height={56} />
-          </a>
-        </Wrapper>
+      <Wrapper>
+      <a
+        href={socialMediaUrls.website}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(event) => {
+          event.preventDefault(); // Prevent the default anchor click behavior
+          openWebsiteInNewTab(socialMediaUrls.website);
+          // Call the openURL function to handle the URL
+        }}
+      >
+        <Image src={browseIcon} alt="Website" height={56} />
+      </a>
+    </Wrapper>
+    
+     
       )}
       {/* Second row */}
       {socialMediaUrls.facebook && (
