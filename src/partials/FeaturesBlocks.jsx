@@ -38,8 +38,8 @@ function FeaturesBlocks() {
         <div className={`py-12 md:py-20 ${isHeaderScrolled ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
           {/* Section header */}
           <div className="max-w-3xl mx-auto text-center pb-12 md:pb-20">
-            <h2 className="h2 mb-4">How White Tap NFC Business Cards Work</h2>
-            <p className="text-xl text-gray-600">Put your contact info directly onto customers’ devices with your White Tap NFC smart visiting card.</p>
+            <h2 className="h2 mb-4 text-3xl sm:text-4xl font-bold">How White Tap NFC Business Cards Work</h2>
+            <p className="text-lg sm:text-xl text-gray-600">Put your contact info directly onto customers’ devices with your White Tap NFC smart visiting card.</p>
           </div>
 
           {/* Items */}
@@ -54,9 +54,9 @@ function FeaturesBlocks() {
               leaveStart="opacity-100 translate-y-0"
               leaveEnd="opacity-0 -translate-y-16"
             >
-              <div className="relative flex flex-col items-center p-6 bg-white rounded shadow-xl">
+              <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
                 <img src={wireless} className="w-16 h-16 p-1 -mt-1 mb-2" alt="Wireless" /> 
-                <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">
+                <h4 className="text-xl font-semibold leading-snug tracking-tight mb-1">
                   Hand holding NFC card
                 </h4>
                 <p className="text-gray-600 text-center">
@@ -75,9 +75,9 @@ function FeaturesBlocks() {
               leaveStart="opacity-100 translate-y-0"
               leaveEnd="opacity-0 -translate-y-16"
             >
-              <div className="relative flex flex-col items-center p-6 bg-white rounded shadow-xl">
-                <img src={nfc} className="w-16 h-16 p-1 -mt-1 mb-2" alt="Wireless" />
-                <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">
+              <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
+                <img src={nfc} className="w-16 h-16 p-1 -mt-1 mb-2" alt="NFC Technology" />
+                <h4 className="text-xl font-semibold leading-snug tracking-tight mb-1">
                   NFC Technology
                 </h4>
                 <p className="text-gray-600 text-center">
@@ -96,9 +96,9 @@ function FeaturesBlocks() {
               leaveStart="opacity-100 translate-y-0"
               leaveEnd="opacity-0 -translate-y-16"
             >
-              <div className="relative flex flex-col items-center p-6 bg-white rounded shadow-xl">
-                <img src={internet} className="w-16 h-16 p-1 -mt-1 mb-2" alt="Wireless" />
-                <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">
+              <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
+                <img src={internet} className="w-16 h-16 p-1 -mt-1 mb-2" alt="Website" />
+                <h4 className="text-xl font-semibold leading-snug tracking-tight mb-1">
                   Website
                 </h4>
                 <p className="text-gray-600 text-center">

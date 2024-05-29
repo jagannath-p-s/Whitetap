@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function Newsletter() {
   return (
-    <section>
+    <section className="py-12 md:py-20 bg-gray-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="pb-12 md:pb-20">
           {/* CTA box */}
@@ -97,16 +97,20 @@ function Newsletter() {
 
             <div className="relative flex flex-col lg:flex-row justify-between items-center">
               {/* CTA content */}
-              <div className="text-center  lg:text-left lg:max-w-xl">
-                <h3 className="h3 text-white mb-6">Personalized Networking Experience</h3>
-                <p className="text-gray-300 text-lg mb-6">
-                Tailor your networking interactions with White Tap NFC
-                  business cards. Seamlessly share your professional profile and
-                  contact information with a simple tap.
+              <div className="text-center lg:text-left lg:max-w-xl">
+                <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                  Personalized Networking Experience
+                </h3>
+                <p className="text-gray-300 text-lg md:text-xl mb-6">
+                  Tailor your networking interactions with White Tap NFC business cards.
+                  Seamlessly share your professional profile and contact information with a simple tap.
                 </p>
 
                 {/* Join now button */}
-                <Link to="/signup" className="btn text-white bg-blue-600 hover:bg-blue-700 shadow">
+                <Link
+                  to="/signup"
+                  className="inline-block px-6 py-3 bg-blue-600 text-white text-lg font-semibold rounded-full shadow-md hover:bg-blue-700 transition duration-300"
+                >
                   Join now
                 </Link>
               </div>
