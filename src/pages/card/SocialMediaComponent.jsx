@@ -14,7 +14,6 @@ import Mail from './images/mail.png';
 import Gallery from './images/gallery.png';
 import Mapicon from './images/mapicon.svg';
 import supabase from '../../supabase';
-import { openURL } from './openURL';
 
 function openWebsiteInNewTab(url) {
   try {
@@ -33,7 +32,6 @@ function openWebsiteInNewTab(url) {
     console.error('Error opening URL in new tab:', error);
   }
 }
-
 
 const openURL = async (url, linkType, socialMediaDataId) => {
   try {
@@ -62,7 +60,32 @@ const openURL = async (url, linkType, socialMediaDataId) => {
   }
 };
 
+const openWebsiteURL = async (url, linkType, socialMediaDataId) => {
+  try {
+    // Insert the click data into the link_clicks table
+    const { data, error } = await supabase
+      .from('link_clicks')
+      .insert([
+        {
+          social_media_data_id: socialMediaDataId,
+          link_type: linkType,
+          link_value: url,
+        },
+      ]);
 
+    if (error) {
+      console.error('Error saving link click:', error);
+    } else {
+      console.log('Link click saved successfully');
+    }
+
+    // Open the URL in a new tab
+    openWebsiteInNewTab(url);
+  } catch (error) {
+    console.error('Error saving link click:', error);
+    // Handle the error if needed
+  }
+};
 
 const SocialMediaComponent = () => {
   // Get the ID from the URL
@@ -87,22 +110,19 @@ const SocialMediaComponent = () => {
         </Wrapper>
       )}
       {socialMediaUrls.website && (
-      <Wrapper>
-      <a
-        href={socialMediaUrls.website}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={(event) => {
-          event.preventDefault(); // Prevent the default anchor click behavior
-          openWebsiteInNewTab(socialMediaUrls.website);
-          // Call the openURL function to handle the URL
-        }}
-      >
-        <Image src={browseIcon} alt="Website" height={56} />
-      </a>
-    </Wrapper>
-    
-     
+        <Wrapper>
+          <a
+            href={socialMediaUrls.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(event) => {
+              event.preventDefault(); // Prevent the default anchor click behavior
+              openWebsiteURL(socialMediaUrls.website, 'website', socialMediaDataId);
+            }}
+          >
+            <Image src={browseIcon} alt="Website" height={56} />
+          </a>
+        </Wrapper>
       )}
       {/* Second row */}
       {socialMediaUrls.facebook && (
@@ -163,7 +183,7 @@ const SocialMediaComponent = () => {
           </a>
         </Wrapper>
       )}
-      {socialMediaUrls.maps && (
+      {socialMediaUrls.drive && (
         <Wrapper>
           <a href={socialMediaUrls.drive} target="_blank" rel="noopener noreferrer" onClick={() => openURL(socialMediaUrls.drive, 'gallery', socialMediaDataId)}>
             <Image src={Gallery} alt="Gallery" height={60} />

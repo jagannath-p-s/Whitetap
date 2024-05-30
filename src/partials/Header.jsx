@@ -19,13 +19,13 @@ function Header() {
   return (
     <header className={`fixed w-full z-30 md:bg-opacity-90 transition duration-300 ease-in-out ${!top && 'bg-white backdrop-blur-sm shadow-lg'}`}>
       <div className="max-w-6xl mx-auto px-5 sm:px-6">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center  justify-between h-16 md:h-20">
 
           {/* Site branding */}
-          <div className="flex-shrink-0 mr-4">
+          <div className="flex-shrink-0 -ml-14  ">
             {/* Logo */}
             <Link to="/" className="block" aria-label="White Tap">
-              <img className="md:w-48 w-36" src={Logo} alt="Logo" />
+              <img className="  w-56 " src={Logo} alt="Logo" />
             </Link>
           </div>
 
@@ -82,9 +82,11 @@ function Header() {
       <div
         className={`fixed top-0 left-0 right-0 z-50 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-y-0' : '-translate-y-full'}`}
       >
-        <div className="flex justify-between -mt-14 items-center p-4">
+        <div className="mt-2">
+        <div className="flex justify-between -mt-24  -ml-14 items-center p-4">
+         
           <Link to="/" className="block" aria-label="White Tap">
-            <img className="w-36" src={Logo} alt="Logo" />
+            <img className="w-52" src={Logo} alt="Logo" />
           </Link>
           <button
             aria-label="Close Menu"
@@ -93,8 +95,8 @@ function Header() {
           >
             <FaTimes size={24} />
           </button>
-        </div>
-        <ul className="p-6 space-y-4">
+        </div></div>
+        <ul className="p-6 -mt-20 space-y-4">
           <li className='flex justify-center'>
             <Link
               to="/signin"

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaExchangeAlt } from "react-icons/fa";
 import ReactCardFlip from "react-card-flip";
 
@@ -13,6 +13,31 @@ function Products() {
   const [selectedColor, setSelectedColor] = useState("green");
   const [isFrontView, setIsFrontView] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [preloadedImages, setPreloadedImages] = useState({});
+
+  useEffect(() => {
+    const preloadImages = async () => {
+      const images = {
+        greenFront,
+        greenBack,
+        peachFront,
+        peachBack,
+        whiteFront,
+        whiteBack,
+      };
+      const promises = Object.values(images).map((src) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = src;
+          img.onload = () => resolve();
+        });
+      });
+      await Promise.all(promises);
+      setPreloadedImages(images);
+    };
+
+    preloadImages();
+  }, []);
 
   const handleColorChange = (color) => {
     setSelectedColor(color);
@@ -96,17 +121,17 @@ function Products() {
             <ReactCardFlip
               isFlipped={!isFrontView}
               flipDirection="horizontal"
-              containerClassName="react-card-flip transition duration-500 ease-in-out transform hover:scale-105"
+              containerClassName="react-card-flip transition duration-300 ease-in-out transform hover:scale-105"
             >
               <img
-                className="max-h-screen px-5 md:px-0 w-auto rounded shadow-lg transition-opacity duration-500 ease-in-out"
+                className="max-h-screen px-5 md:px-0 w-auto rounded shadow-lg transition-opacity duration-300 ease-in-out"
                 style={{ opacity: isLoading ? 0 : 1 }}
                 src={getCardImage()}
                 alt={`${selectedColor} card front`}
                 onLoad={handleImageLoad}
               />
               <img
-                className="max-h-screen px-5 md:px-0 w-auto rounded shadow-lg transition-opacity duration-500 ease-in-out"
+                className="max-h-screen px-5 md:px-0 w-auto rounded shadow-lg transition-opacity duration-300 ease-in-out"
                 style={{ opacity: isLoading ? 0 : 1 }}
                 src={getCardImage()}
                 alt={`${selectedColor} card back`}
