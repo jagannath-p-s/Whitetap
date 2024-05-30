@@ -35,32 +35,7 @@ function openWebsiteInNewTab(url) {
 }
 
 
-const openURL = async (url, linkType, socialMediaDataId) => {
-  try {
-    // Insert the click data into the link_clicks table
-    const { data, error } = await supabase
-      .from('link_clicks')
-      .insert([
-        {
-          social_media_data_id: socialMediaDataId,
-          link_type: linkType,
-          link_value: url,
-        },
-      ]);
 
-    if (error) {
-      console.error('Error saving link click:', error);
-    } else {
-      console.log('Link click saved successfully');
-    }
-
-    // Open the URL
-    window.open(url, '_blank');
-  } catch (error) {
-    console.error('Error saving link click:', error);
-    // Handle the error if needed
-  }
-};
 
 
 
