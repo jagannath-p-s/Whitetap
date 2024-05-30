@@ -1,9 +1,10 @@
+// src/pages/SignIn.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "../supabase";
 import Header from "../partials/Header";
 
-function SignIn() {
+function SignIn({ setIsAuthenticated, setIsAdmin }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,6 +30,10 @@ function SignIn() {
           );
         } else {
           // Sign-in successful
+          setIsAuthenticated(true);
+          setIsAdmin(data.is_admin);
+          localStorage.setItem('userEmail', email);
+
           if (data.is_admin) {
             // User is an admin, navigate to AdminHome
             navigate("/admin-home", { state: { signedInUserEmail: email } });
@@ -70,7 +75,7 @@ function SignIn() {
                       </label>
                       <input
                         id="email"
-                        type=""
+                        type="email"
                         className="form-input w-full text-gray-800"
                         placeholder="Enter your email address"
                         value={email}
