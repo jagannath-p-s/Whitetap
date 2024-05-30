@@ -21,13 +21,8 @@ function UserHome() {
   const toggleEditing = () => setIsEditing(!isEditing);
 
   const handleViewCard = () => {
-    if (!userData || !userData.id) {
-      console.error("User data or user ID is not available");
-      return;
-    }
     const userId = userData.id;
     const url = `${window.location.origin}/profile/${userId}/`;
-    console.log("Opening URL:", url); // Debugging line
     window.open(url, '_blank');
   };
   
