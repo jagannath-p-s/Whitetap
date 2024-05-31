@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import Transition from "../utils/Transition";
 
 import NFCBusinessCard from "../images/nfc-business-card.jpg";
@@ -6,9 +8,11 @@ import WebsitePreview from "../images/whitetap/iPhone.svg";
 
 function Features() {
   const [tab, setTab] = useState(1);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
-  const [isContentVisible, setIsContentVisible] = useState(false);
-  const [isTabsVisible, setIsTabsVisible] = useState(false);
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
 
   const headerRef = useRef(null);
   const contentRef = useRef(null);
@@ -27,38 +31,29 @@ function Features() {
   }, [tab]);
 
   useEffect(() => {
-    const observerOptions = {
-      threshold: 0.1,
-    };
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
 
-    const headerObserver = new IntersectionObserver(
-      ([entry]) => setIsHeaderVisible(entry.isIntersecting),
-      observerOptions
-    );
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.2 } }
+  };
 
-    const contentObserver = new IntersectionObserver(
-      ([entry]) => setIsContentVisible(entry.isIntersecting),
-      observerOptions
-    );
-
-    const tabsObserver = new IntersectionObserver(
-      ([entry]) => setIsTabsVisible(entry.isIntersecting),
-      observerOptions
-    );
-
-    if (headerRef.current) headerObserver.observe(headerRef.current);
-    if (contentRef.current) contentObserver.observe(contentRef.current);
-    if (tabsRef.current) tabsObserver.observe(tabsRef.current);
-
-    return () => {
-      if (headerRef.current) headerObserver.unobserve(headerRef.current);
-      if (contentRef.current) contentObserver.unobserve(contentRef.current);
-      if (tabsRef.current) tabsObserver.unobserve(tabsRef.current);
-    };
-  }, []);
+  const tabVariants = {
+    hidden: { opacity: 0, x: -50 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.6, delay: 0.4 } }
+  };
 
   return (
-    <section className="relative ">
+    <motion.section
+      className="relative"
+      ref={ref}
+      initial="hidden"
+      animate={controls}
+      variants={sectionVariants}
+    >
       {/* Section background */}
       <div
         className="absolute inset-0 bg-gray-100 pointer-events-none mb-16"
@@ -67,11 +62,10 @@ function Features() {
       <div className="absolute left-0 right-0 m-auto w-px p-px h-20 bg-gray-200 transform -translate-y-1/2"></div>
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
-        <div
+        <motion.div
           ref={headerRef}
-          className={`pt-12 md:pt-20 max-w-3xl mx-auto text-center pb-12 md:pb-16 transition-opacity duration-700 ${
-            isHeaderVisible ? "opacity-100" : "opacity-0"
-          }`}
+          className={`pt-12 md:pt-20 max-w-3xl mx-auto text-center pb-12 md:pb-16 transition-opacity duration-700`}
+          variants={sectionVariants}
         >
           {/* Section header */}
           <div>
@@ -83,14 +77,13 @@ function Features() {
               to share your information seamlessly with others.
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Section content */}
-        <div
+        <motion.div
           ref={contentRef}
-          className={`md:grid md:grid-cols-12 md:gap-6 transition-opacity duration-700 ${
-            isContentVisible ? "opacity-100" : "opacity-0"
-          }`}
+          className={`md:grid md:grid-cols-12 md:gap-6 transition-opacity duration-700`}
+          variants={sectionVariants}
         >
           {/* Content */}
           <div className="max-w-xl md:max-w-none md:w-full mx-auto md:col-span-7 lg:col-span-6 md:mt-6">
@@ -104,10 +97,9 @@ function Features() {
               </p>
             </div>
             {/* Tabs buttons */}
-            <div
-              className={`mb-8 md:mb-0 transition-opacity duration-700 ${
-                isTabsVisible ? "opacity-100" : "opacity-0"
-              }`}
+            <motion.div
+              className={`mb-8 md:mb-0 transition-opacity duration-700`}
+              variants={tabVariants}
             >
               <a
                 className={`flex items-center text-base sm:text-lg p-4 sm:p-5 rounded border transition duration-300 ease-in-out mb-3 ${
@@ -174,7 +166,7 @@ function Features() {
                   </svg>
                 </div>
               </a>
-            </div>
+            </motion.div>
           </div>
 
           {/* Tabs items */}
@@ -196,14 +188,15 @@ function Features() {
                 leaveEnd="opacity-0 -translate-y-16"
               >
                 <div className="relative inline-flex flex-col">
-                  <img
-                    className={`md:max-w-none mx-auto rounded transition-opacity duration-700 ${
-                      isTabsVisible ? "opacity-100" : "opacity-0"
-                    }`}
+                  <motion.img
+                    className={`md:max-w-none mx-auto rounded transition-opacity duration-700`}
                     src={NFCBusinessCard}
                     width="400"
                     height="362"
                     alt="NFC Business Card"
+                    initial="hidden"
+                    animate={inView ? "visible" : "hidden"}
+                    variants={tabVariants}
                   />
                 </div>
               </Transition>
@@ -220,22 +213,23 @@ function Features() {
                 leaveEnd="opacity-0 -translate-y-16"
               >
                 <div className="relative inline-flex flex-col">
-                  <img
-                    className={`md:max-w-none md:mr-28 mx-auto rounded transition-opacity duration-700 ${
-                      isTabsVisible ? "opacity-100" : "opacity-0"
-                    }`}
+                  <motion.img
+                    className={`md:max-w-none md:mr-28 mx-auto rounded transition-opacity duration-700`}
                     src={WebsitePreview}
                     width="200"
                     height="362"
                     alt="Online Profile"
+                    initial="hidden"
+                    animate={inView ? "visible" : "hidden"}
+                    variants={tabVariants}
                   />
                 </div>
               </Transition>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 

@@ -1,10 +1,26 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import frame from "../images/whitetap/Frame.svg";
 
 function Newsletter() {
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.2 } }
+  };
+
+  const buttonVariants = {
+    hover: { scale: 1.05, boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.3)" },
+    tap: { scale: 0.95 }
+  };
+
   return (
-    <section className="py-12 md:py-20 bg-gray-100">
+    <motion.section
+      className="py-12 md:py-20 bg-gray-100"
+      initial="hidden"
+      animate="visible"
+      variants={sectionVariants}
+    >
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="pb-12 md:pb-20">
           {/* CTA box */}
@@ -14,11 +30,11 @@ function Newsletter() {
           >
             {/* Background illustration */}
             <div
-              className="absolute right-0 bottom-0 pointer-events-none hidden lg:block"
+              className="absolute right-0 bottom-0 pointer-events-none lg:block"
               aria-hidden="true"
             >
               <img
-                className="transform  translate-x-16 translate-y-10 animate-float"
+                className="transform translate-x-16 translate-y-10 animate-float"
                 src={frame}
                 width="500"
                 height="400"
@@ -40,18 +56,24 @@ function Newsletter() {
                 </p>
 
                 {/* Join now button */}
-                <Link
-                  to="/signup"
-                  className="inline-block px-6 py-3 bg-blue-600 text-white text-lg font-semibold rounded-full shadow-md hover:bg-blue-700 transition duration-300"
+                <motion.div
+                  whileHover="hover"
+                  whileTap="tap"
+                  variants={buttonVariants}
                 >
-                  Join now
-                </Link>
+                  <Link
+                    to="/signup"
+                    className="inline-block px-6 py-3 bg-blue-600 text-white text-lg font-semibold rounded-full shadow-md hover:bg-blue-700 transition duration-300"
+                  >
+                    Join now
+                  </Link>
+                </motion.div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 

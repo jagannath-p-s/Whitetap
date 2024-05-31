@@ -1,42 +1,37 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import gifImage from "../images/videos/video.gif"; // Import GIF image
-import iPhoneImage from "../images/whitetap/iPhone.svg"; // Standard import for iPhone SVG image
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import gifImage from "../images/videos/video.gif";
+import iPhoneImage from "../images/whitetap/iPhone.svg";
 
 function HeroHome() {
   const [isMobileView, setIsMobileView] = useState(false);
   const [isIntersecting, setIsIntersecting] = useState(false);
-  const heroSectionRef = useRef(null);
-  const observer = useRef(null);
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobileView(window.innerWidth < 768);
     };
 
-    const handleIntersection = (entries) => {
-      const [entry] = entries;
-      setIsIntersecting(entry.isIntersecting);
-    };
-
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    observer.current = new IntersectionObserver(handleIntersection, {
-      threshold: 0.1,
-    });
-
-    if (heroSectionRef.current) {
-      observer.current.observe(heroSectionRef.current);
-    }
-
     return () => {
       window.removeEventListener("resize", handleResize);
-      if (observer.current && heroSectionRef.current) {
-        observer.current.unobserve(heroSectionRef.current);
-      }
     };
   }, []);
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
 
   const handleScrollDown = () => {
     window.scrollTo({
@@ -45,9 +40,39 @@ function HeroHome() {
     });
   };
 
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.2 } }
+  };
+
+  const buttonVariants = {
+    hover: { scale: 1.05, boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.3)" },
+    tap: { scale: 0.95 }
+  };
+
+  const textVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.4 } }
+  };
+
+  const imageVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.6, delay: 0.6 } }
+  };
+
+  const mobileGifVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.8 } }
+  };
+
   return (
-    <section className="relative" ref={heroSectionRef}>
-      {/* Illustration behind hero content */}
+    <motion.section
+      className="relative"
+      ref={ref}
+      initial="hidden"
+      animate={controls}
+      variants={sectionVariants}
+    >
       <div
         className="absolute left-1/2 transform -translate-x-1/2 bottom-0 pointer-events-none"
         aria-hidden="true"
@@ -79,10 +104,11 @@ function HeroHome() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        {/* Hero content */}
         <div className="pt-32 pb-12 md:pt-40 md:pb-20">
-          {/* Section header */}
-          <div className="text-center pb-12 md:pb-16">
+          <motion.div
+            className="text-center pb-12 md:pb-16"
+            variants={textVariants}
+          >
             <h1
               className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tighter tracking-tighter mb-4 text-gray-900"
               data-aos="zoom-y-out"
@@ -103,55 +129,66 @@ function HeroHome() {
                 data-aos="zoom-y-out"
                 data-aos-delay="300"
               >
-                <div>
+                <motion.div
+                  whileHover="hover"
+                  whileTap="tap"
+                  variants={buttonVariants}
+                >
                   <Link
                     className="btn text-white bg-blue-600 hover:bg-blue-700 w-full mb-4 sm:w-auto sm:mb-0"
                     to="/signup"
                   >
                     Get Your NFC Card
                   </Link>
-                </div>
-                <div>
+                </motion.div>
+                <motion.div
+                  whileHover="hover"
+                  whileTap="tap"
+                  variants={buttonVariants}
+                >
                   <button
                     className="btn text-white bg-gray-900 hover:bg-gray-800 w-full sm:w-auto sm:ml-4"
                     onClick={handleScrollDown}
                   >
                     Learn More
                   </button>
-                </div>
+                </motion.div>
               </div>
             </div>
-          </div>
-          {/* Hero image and iPhone SVG */}
-          <div
+          </motion.div>
+          <motion.div
             className={`relative flex flex-col sm:flex-row items-center justify-center transition-opacity duration-500 ${
               isIntersecting ? "opacity-100" : "opacity-0"
             }`}
+            variants={imageVariants}
           >
-            {/* iPhone SVG */}
-            <img
+            <motion.img
               className="mx-auto mb-8 sm:mb-0 sm:mr-8"
               src={iPhoneImage}
               width="264"
               height="464"
               alt="iPhone"
-              loading="lazy" // Lazy loading attribute for better performance
+              loading="lazy"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: inView ? 1 : 0, x: inView ? 0 : -50 }}
+              transition={{ duration: 0.5 }}
             />
-            {/* GIF image */}
             {!isMobileView && (
-              <img
+              <motion.img
                 className="mx-auto w-full sm:w-3/4 lg:w-1/2"
                 src={gifImage}
                 width="auto"
                 height="auto"
                 alt="GIF"
-                loading="lazy" // Lazy loading attribute for better performance
+                loading="lazy"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: inView ? 1 : 0, x: inView ? 0 : 50 }}
+                transition={{ duration: 0.5 }}
               />
             )}
-          </div>
-          {/* GIF image (for mobile view) */}
+          </motion.div>
           {isMobileView && (
-            <img
+            <motion.img
               className={`mx-auto mb-8 transition-opacity duration-500 ${
                 isIntersecting ? "opacity-100" : "opacity-0"
               }`}
@@ -159,12 +196,15 @@ function HeroHome() {
               width="auto"
               height="auto"
               alt="GIF"
-              loading="lazy" // Lazy loading attribute for better performance
+              loading="lazy"
+              initial="hidden"
+              animate={inView ? "visible" : "hidden"}
+              variants={mobileGifVariants}
             />
           )}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
