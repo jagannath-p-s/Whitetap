@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaExchangeAlt } from "react-icons/fa";
 import ReactCardFlip from "react-card-flip";
+import { motion } from "framer-motion";
 
 import greenBack from "../images/whitetap/greenBack.jpg";
 import greenFront from "../images/whitetap/greenFront.jpg";
@@ -13,19 +14,15 @@ function Products() {
   const [selectedColor, setSelectedColor] = useState("green");
   const [isFrontView, setIsFrontView] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [preloadedImages, setPreloadedImages] = useState({});
 
   useEffect(() => {
     const preloadImages = async () => {
-      const images = {
-        greenFront,
-        greenBack,
-        peachFront,
-        peachBack,
-        whiteFront,
-        whiteBack,
-      };
-      const promises = Object.values(images).map((src) => {
+      const images = [
+        greenFront, greenBack,
+        peachFront, peachBack,
+        whiteFront, whiteBack,
+      ];
+      const promises = images.map((src) => {
         return new Promise((resolve) => {
           const img = new Image();
           img.src = src;
@@ -33,7 +30,7 @@ function Products() {
         });
       });
       await Promise.all(promises);
-      setPreloadedImages(images);
+      setIsLoading(false);
     };
 
     preloadImages();
@@ -58,8 +55,9 @@ function Products() {
     setIsFrontView(!isFrontView);
   };
 
-  const handleImageLoad = () => {
-    setIsLoading(false);
+  const buttonVariants = {
+    hover: { scale: 1.1, boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.3)" },
+    tap: { scale: 0.9 }
   };
 
   return (
@@ -78,8 +76,8 @@ function Products() {
       <div className="flex flex-col md:flex-row justify-center items-center md:space-x-32">
         {/* Color selection buttons */}
         <div className="flex md:flex-col justify-center mb-8 md:-mt-10 space-x-4 md:space-x-0 md:space-y-4">
-          <button
-            className={`w-16 h-16 rounded-full border-4 transition duration-300 ease-in-out transform hover:scale-110 hover:shadow-lg focus:outline-none ${
+          <motion.button
+            className={`w-16 h-16 rounded-full border-4 transition duration-300 ease-in-out transform focus:outline-none ${
               selectedColor === "green"
                 ? "border-green-500 ring-2 ring-green-500 ring-offset-2"
                 : "border-gray-200"
@@ -87,9 +85,12 @@ function Products() {
             style={{ backgroundColor: "darkgreen" }}
             onClick={() => handleColorChange("green")}
             aria-label="Select Green Color"
-          ></button>
-          <button
-            className={`w-16 h-16 rounded-full border-4 transition duration-300 ease-in-out transform hover:scale-110 hover:shadow-lg focus:outline-none ${
+            whileHover="hover"
+            whileTap="tap"
+            variants={buttonVariants}
+          ></motion.button>
+          <motion.button
+            className={`w-16 h-16 rounded-full border-4 transition duration-300 ease-in-out transform focus:outline-none ${
               selectedColor === "peach"
                 ? "border-orange-500 ring-2 ring-orange-500 ring-offset-2"
                 : "border-gray-200"
@@ -97,9 +98,12 @@ function Products() {
             style={{ backgroundColor: "peachpuff" }}
             onClick={() => handleColorChange("peach")}
             aria-label="Select Peach Color"
-          ></button>
-          <button
-            className={`w-16 h-16 rounded-full border-4 transition duration-300 ease-in-out transform hover:scale-110 hover:shadow-lg focus:outline-none ${
+            whileHover="hover"
+            whileTap="tap"
+            variants={buttonVariants}
+          ></motion.button>
+          <motion.button
+            className={`w-16 h-16 rounded-full border-4 transition duration-300 ease-in-out transform focus:outline-none ${
               selectedColor === "white"
                 ? "border-gray-400 ring-2 ring-gray-400 ring-offset-2"
                 : "border-gray-200"
@@ -107,7 +111,10 @@ function Products() {
             style={{ backgroundColor: "white" }}
             onClick={() => handleColorChange("white")}
             aria-label="Select White Color"
-          ></button>
+            whileHover="hover"
+            whileTap="tap"
+            variants={buttonVariants}
+          ></motion.button>
         </div>
 
         {/* Card image */}
@@ -128,28 +135,27 @@ function Products() {
                 style={{ opacity: isLoading ? 0 : 1 }}
                 src={getCardImage()}
                 alt={`${selectedColor} card front`}
-                onLoad={handleImageLoad}
               />
               <img
                 className="max-h-screen px-5 md:px-0 w-auto rounded shadow-lg transition-opacity duration-300 ease-in-out"
                 style={{ opacity: isLoading ? 0 : 1 }}
                 src={getCardImage()}
                 alt={`${selectedColor} card back`}
-                onLoad={handleImageLoad}
               />
             </ReactCardFlip>
           </div>
 
           {/* View toggle button */}
-          <div className="mt-8">
-            <button
-              className="flex items-center justify-center px-6 py-3 rounded-full text-lg font-semibold mb-7 text-white transition duration-300 ease-in-out focus:outline-none focus:ring-2 bg-gray-900 hover:bg-gray-800"
-              onClick={toggleView}
-            >
-              <FaExchangeAlt size={24} className="mr-2" />
-              Flip Card
-            </button>
-          </div>
+          <motion.button
+            className="flex items-center justify-center px-6 py-3 rounded-full text-lg font-semibold mb-7 text-white transition duration-300 ease-in-out focus:outline-none focus:ring-2 bg-gray-900 hover:bg-gray-800 mt-8"
+            onClick={toggleView}
+            whileHover="hover"
+            whileTap="tap"
+            variants={buttonVariants}
+          >
+            <FaExchangeAlt size={24} className="mr-2" />
+            Flip Card
+          </motion.button>
         </div>
       </div>
     </section>
