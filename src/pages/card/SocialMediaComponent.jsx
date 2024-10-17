@@ -171,7 +171,7 @@ const SocialMediaComponent = () => {
       {/* Fourth row */}
       {socialMediaUrls.email && (
         <Wrapper>
-          <a href={`mailto:${socialMediaUrls.email}`} onClick={() => openURL(socialMediaUrls.email, 'email', socialMediaDataId)}>
+          <a href={`${socialMediaUrls.email}`} onClick={() => openURL(socialMediaUrls.email, 'email', socialMediaDataId)}>
             <Image src={Mail} alt="Mail" height={75} />
           </a>
         </Wrapper>
