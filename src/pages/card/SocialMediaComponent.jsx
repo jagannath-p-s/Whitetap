@@ -97,7 +97,7 @@ const SocialMediaComponent = () => {
       {/* First row */}
       {socialMediaUrls.phone && (
         <Wrapper>
-          <a href={`tel:${socialMediaUrls.phone}`} onClick={() => openURL(socialMediaUrls.phone, 'phone', socialMediaDataId)}>
+          <a href={`${socialMediaUrls.phone}`} onClick={() => openURL(socialMediaUrls.phone, 'phone', socialMediaDataId)}>
             <Image src={callIcon} alt="Phone" height={40} />
           </a>
         </Wrapper>
