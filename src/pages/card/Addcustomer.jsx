@@ -72,7 +72,7 @@ const InsertDataForm = () => {
     youtube: '',
     linkedin: '',
     google_reviews: '',
-    paytm: '',
+    upi: '',
     email: '',
     maps: '',
     background_image: ''
@@ -132,7 +132,7 @@ const InsertDataForm = () => {
         youtube: '',
         linkedin: '',
         google_reviews: '',
-        paytm: '',
+        upi: '',
         email: '',
         maps: '',
         background_image: ''
@@ -256,11 +256,11 @@ const InsertDataForm = () => {
     />
   </Label>
   <Label>
-    Paytm:
+    UPI:
     <Input
       type="text"
-      name="paytm"
-      value={formData.paytm}
+      name="upi"
+      value={formData.upi}
       onChange={handleChange}
     />
   </Label>

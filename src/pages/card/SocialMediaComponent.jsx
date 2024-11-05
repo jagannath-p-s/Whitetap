@@ -161,10 +161,10 @@ const SocialMediaComponent = () => {
           </a>
         </Wrapper>
       )}
-      {socialMediaUrls.paytm && (
+      {socialMediaUrls.upi && (
         <Wrapper>
-          <a href={socialMediaUrls.paytm} target="_blank" rel="noopener noreferrer" onClick={() => openURL(socialMediaUrls.paytm, 'paytm', socialMediaDataId)}>
-            <Image src={paytmIcon} alt="Paytm" height={65} />
+          <a href={socialMediaUrls.upi} target="_blank" rel="noopener noreferrer" onClick={() => openURL(socialMediaUrls.upi, 'upi', socialMediaDataId)}>
+            <Image src={paytmIcon} alt="upi" height={65} />
           </a>
         </Wrapper>
       )}
