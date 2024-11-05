@@ -13,6 +13,7 @@ import AdminHome from "./pages/AdminHome";
 import Customerside from "./pages/card/Customerside";
 import ProtectedRoute from "./ProtectedRoute";
 import supabase from "./supabase";
+import { ThemeProvider } from "@/components/theme-provider"; // Import ThemeProvider
 
 function App() {
   const location = useLocation();
@@ -63,7 +64,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme"> {/* Wrap with ThemeProvider */}
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/signin" element={<SignIn setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />} />
@@ -73,7 +74,7 @@ function App() {
         <Route path="/admin-home" element={<ProtectedRoute isAuthenticated={isAuthenticated} isAdmin={isAdmin} isAdminRoute={true} element={<AdminHome />} />} />
         <Route path="/profile/:userId" element={<ProtectedRoute unprotected element={<Customerside />} />} />
       </Routes>
-    </>
+    </ThemeProvider>
   );
 }
 

@@ -1,6 +1,27 @@
-//AdddUser.jsx
+// src/pages/adminwidgets/AddUser.jsx
+
 import React, { useState, Fragment, useRef, useEffect } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Plus } from "lucide-react";
+import supabase from "../../supabase"; // Ensure correct path
 
 function AddUser({ isOpen, setIsOpen, handleAddUser }) {
   const cancelButtonRef = useRef(null);
@@ -18,18 +39,50 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
     youtube: "",
     linkedin: "",
     google_reviews: "",
-    paytm: "",
+    upi: "",
     maps: "",
-    card_background_image: "",
+    background_image: "", // Holds the URL of the selected background image
     avatar: "",
-    background_image: "",
     drive_link: "",
   });
 
   const [alertMessage, setAlertMessage] = useState(null); // Alert message
+  const [themes, setThemes] = useState([]); // State to hold themes
+  const [themesLoading, setThemesLoading] = useState(true); // Loading state for themes
+  const [themesError, setThemesError] = useState(null); // Error state for themes
+
+  // Fetch themes from Supabase when component mounts
+  useEffect(() => {
+    const fetchThemes = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("theme")
+          .select("*")
+          .order("theme_name", { ascending: true }); // Optional: Order themes alphabetically
+
+        if (error) {
+          console.error("Error fetching themes:", error);
+          setThemesError("Failed to load themes. Please try again.");
+        } else {
+          setThemes(data);
+        }
+      } catch (err) {
+        console.error("Unexpected error fetching themes:", err);
+        setThemesError("An unexpected error occurred while loading themes.");
+      } finally {
+        setThemesLoading(false);
+      }
+    };
+
+    fetchThemes();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (value, name) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -42,6 +95,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
         message: "User added successfully!",
       });
 
+      // Reset form data
       setFormData({
         name: "",
         email: "",
@@ -55,16 +109,16 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
         youtube: "",
         linkedin: "",
         google_reviews: "",
-        paytm: "",
+        upi: "",
         maps: "",
-        card_background_image: "",
-        avatar: "",
         background_image: "",
+        avatar: "",
         drive_link: "",
       });
 
       setIsOpen(false); // Close the modal after successful addition
     } catch (error) {
+      console.error("Error adding user:", error);
       setAlertMessage({
         type: "error",
         message: "An error occurred while adding the user. Please try again.",
@@ -72,6 +126,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
     }
   };
 
+  // Automatically dismiss alert after 3 seconds
   useEffect(() => {
     if (alertMessage) {
       const timer = setTimeout(() => {
@@ -88,10 +143,11 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
 
   return (
     <div>
+      {/* Alert Message */}
       {alertMessage && (
         <div
           role="alert"
-          className={`rounded-xl border p-4 ${
+          className={`rounded-xl border p-4 mb-4 ${
             alertMessage.type === "success"
               ? "border-green-100 bg-green-50"
               : "border-red-100 bg-red-50"
@@ -115,7 +171,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 a9 9 0 0118 0z"
+                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
               ) : (
@@ -136,7 +192,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
               )}
             </span>
             <div className="flex-1">
-              <strong className="block font-medium text-gray-900">
+              <strong className="block font-medium text-gray-900 dark:text-gray-100">
                 {alertMessage.message}
               </strong>
             </div>
@@ -164,234 +220,363 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
         </div>
       )}
 
-      <Transition.Root show={isOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-10"
-          initialFocus={cancelButtonRef}
-          onClose={() => setIsOpen(false)}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-          </Transition.Child>
+      {/* Add User Dialog */}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="sm:max-w-3xl h-[90%]">
+          <DialogHeader>
+            <DialogTitle>Add New User</DialogTitle>
+            <DialogDescription>
+              Please fill in the details of the new user.
+            </DialogDescription>
+          </DialogHeader>
 
-          <div className="fixed inset-0 z-10 overflow-y-auto">
-            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              >
-                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:max-w-lg">
-                  <div className="bg-white px-6 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <h3 className="text-xl font-bold">Add New User</h3>
+          {/* ScrollArea Wrapper */}
+          <ScrollArea className="h-[400px] mt-4">
+            <form
+              onSubmit={handleSubmit}
+              className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+            >
+              {/* Name */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Enter name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-                    <form
-                      onSubmit={handleSubmit}
-                      className="grid grid-cols-2 gap-4"
-                    >
-                      {/* Input fields */}
-                      <input
-                        type="text"
-                        name="name"
-                        placeholder="Name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                        required
-                      />
-                      {/* Remaining input fields */}
-                      <input
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                        required
-                      />
+              {/* Email */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-                      <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                        required
-                      />
+              {/* Password */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Password
+                </Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Enter password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-                      {/* Add remaining input fields, including all the fields you listed previously */}
-                      <input
-                        type="text"
-                        name="designation"
-                        placeholder="Designation"
-                        value={formData.designation}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* Designation */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="designation"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Designation
+                </Label>
+                <Input
+                  id="designation"
+                  name="designation"
+                  type="text"
+                  placeholder="Enter designation"
+                  value={formData.designation}
+                  onChange={handleChange}
+                />
+              </div>
 
-                      {/* Remaining fields */}
-                      <input
-                        type="text"
-                        name="phone"
-                        placeholder="Phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* Phone */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="phone"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Phone
+                </Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="Enter phone number"
+                  value={formData.phone}
+                  onChange={handleChange}
+                />
+              </div>
 
-                      <input
-                        type="text"
-                        name="website"
-                        placeholder="Website"
-                        value={formData.website}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* Website */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="website"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Website
+                </Label>
+                <Input
+                  id="website"
+                  name="website"
+                  type="url"
+                  placeholder="Enter website URL"
+                  value={formData.website}
+                  onChange={handleChange}
+                />
+              </div>
 
-                      <input
-                        type="text"
-                        name="whatsapp"
-                        placeholder="WhatsApp"
-                        value={formData.whatsapp}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* WhatsApp */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="whatsapp"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  WhatsApp
+                </Label>
+                <Input
+                  id="whatsapp"
+                  name="whatsapp"
+                  type="text"
+                  placeholder="Enter WhatsApp number"
+                  value={formData.whatsapp}
+                  onChange={handleChange}
+                />
+              </div>
 
-                      <input
-                        type="text"
-                        name="facebook"
-                        placeholder="Facebook"
-                        value={formData.facebook}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* Facebook */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="facebook"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Facebook
+                </Label>
+                <Input
+                  id="facebook"
+                  name="facebook"
+                  type="url"
+                  placeholder="Enter Facebook profile URL"
+                  value={formData.facebook}
+                  onChange={handleChange}
+                />
+              </div>
 
-                      <input
-                        type="text"
-                        name="instagram"
-                        placeholder="Instagram"
-                        value={formData.instagram}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* Instagram */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="instagram"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Instagram
+                </Label>
+                <Input
+                  id="instagram"
+                  name="instagram"
+                  type="url"
+                  placeholder="Enter Instagram profile URL"
+                  value={formData.instagram}
+                  onChange={handleChange}
+                />
+              </div>
 
-                      <input
-                        type="text"
-                        name="youtube"
-                        placeholder="YouTube"
-                        value={formData.youtube}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* YouTube */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="youtube"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  YouTube
+                </Label>
+                <Input
+                  id="youtube"
+                  name="youtube"
+                  type="url"
+                  placeholder="Enter YouTube channel URL"
+                  value={formData.youtube}
+                  onChange={handleChange}
+                />
+              </div>
 
-                      <input
-                        type="text"
-                        name="linkedin"
-                        placeholder="LinkedIn"
-                        value={formData.linkedin}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* LinkedIn */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="linkedin"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  LinkedIn
+                </Label>
+                <Input
+                  id="linkedin"
+                  name="linkedin"
+                  type="url"
+                  placeholder="Enter LinkedIn profile URL"
+                  value={formData.linkedin}
+                  onChange={handleChange}
+                />
+              </div>
 
-                      <input
-                        type="text"
-                        name="google_reviews"
-                        placeholder="Google Reviews"
-                        value={formData.google_reviews}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* Google Reviews */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="google_reviews"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Google Reviews
+                </Label>
+                <Input
+                  id="google_reviews"
+                  name="google_reviews"
+                  type="text"
+                  placeholder="Enter Google Reviews link"
+                  value={formData.google_reviews}
+                  onChange={handleChange}
+                />
+              </div>
 
-                      <input
-                        type="text"
-                        name="paytm"
-                        placeholder="Paytm"
-                        value={formData.paytm}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
-                      <input
-                        type="text"
-                        name="drive_link"
-                        placeholder="Drive link"
-                        value={formData.drive_link}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* UPI */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="upi"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  UPI
+                </Label>
+                <Input
+                  id="upi"
+                  name="upi"
+                  type="text"
+                  placeholder="Enter UPI link"
+                  value={formData.upi}
+                  onChange={handleChange}
+                />
+              </div>
 
-                      <input
-                        type="text"
-                        name="maps"
-                        placeholder="Maps"
-                        value={formData.maps}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* Maps */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="maps"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Maps
+                </Label>
+                <Input
+                  id="maps"
+                  name="maps"
+                  type="url"
+                  placeholder="Enter Google Maps link"
+                  value={formData.maps}
+                  onChange={handleChange}
+                />
+              </div>
 
-                      <input
-                        type="text"
-                        name="card_background_image"
-                        placeholder="Card Background Image"
-                        value={formData.card_background_image}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* Background Image Select */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="background_image"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Background Image
+                </Label>
+                {themesLoading ? (
+                  <Skeleton className="w-full h-10 rounded-md" />
+                ) : themesError ? (
+                  <p className="text-red-500">{themesError}</p>
+                ) : (
+                  <Select
+                    value={formData.background_image}
+                    onValueChange={(value) =>
+                      handleSelectChange(value, "background_image")
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select background image" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {themes.map((theme) => (
+                        <SelectItem
+                          key={theme.id}
+                          value={theme.background_image_url}
+                        >
+                          {theme.theme_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
 
-                      <input
-                        type="text"
-                        name="avatar"
-                        placeholder="Avatar"
-                        value={formData.avatar}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
+              {/* Avatar */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="avatar"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Avatar URL
+                </Label>
+                <Input
+                  id="avatar"
+                  name="avatar"
+                  type="url"
+                  placeholder="Enter avatar image URL"
+                  value={formData.avatar}
+                  onChange={handleChange}
+                />
+              </div>
 
-                      <input
-                        type="text"
-                        name="background_image"
-                        placeholder="Background Image"
-                        value={formData.background_image}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 w-full"
-                      />
-                      <button
-                        type="submit"
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                      >
-                        Submit
-                      </button>
-                    </form>
-                  </div>
+              {/* Drive Link */}
+              <div className="col-span-1">
+                <Label
+                  htmlFor="drive_link"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Drive Link
+                </Label>
+                <Input
+                  id="drive_link"
+                  name="drive_link"
+                  type="url"
+                  placeholder="Enter Google Drive link"
+                  value={formData.drive_link}
+                  onChange={handleChange}
+                />
+              </div>
 
-                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button
-                      type="button"
-                      className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Close
-                    </button>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition.Root>
+              {/* Submit Button */}
+              <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex justify-end">
+                <Button
+                  type="submit"
+                  className="mt-4 mr-4 flex items-center space-x-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Add User</span>
+                </Button>
+              </div>
+            </form>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

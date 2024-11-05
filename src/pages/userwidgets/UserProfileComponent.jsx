@@ -75,8 +75,8 @@ const UserProfileComponent = ({ userData }) => (
             </td>
           </tr>
           <tr>
-            <td className="p-3 text-lg text-gray-700">Paytm:</td>
-            <td className="p-3 text-lg text-gray-700">{userData.paytm}</td>
+            <td className="p-3 text-lg text-gray-700">UPI:</td>
+            <td className="p-3 text-lg text-gray-700">{userData.upi}</td>
           </tr>
           <tr>
             <td className="p-3 text-lg text-gray-700">Email:</td>

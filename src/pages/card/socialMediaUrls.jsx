@@ -46,7 +46,7 @@ async function populateSocialMediaUrls() {
       youtube: userData.youtube,
       linkedin: userData.linkedin,
       googleReviews: userData.google_reviews,
-      paytm: userData.paytm,
+      upi: userData.upi,
       email: userData.email ? `mailto:${userData.email}` : '',
       maps: userData.maps,
       backgroundImage: userData.background_image,
