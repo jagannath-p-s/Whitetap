@@ -1,3 +1,5 @@
+// src/pages/adminwidgets/ViewUserQR.jsx
+
 import React, { useEffect, useState, useRef } from "react";
 import QRCode from "qrcode.react";
 import supabase from "../../supabase";
@@ -7,18 +9,24 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogTrigger,
 } from "@/components/ui/dialog"; // Assuming ShadCN Dialog is available
 import { Button } from "@/components/ui/button"; // Assuming ShadCN Button is available
+import { Skeleton } from "@/components/ui/skeleton"; // For loading state
 
 function ViewUserQR({ isOpen, setIsOpen, userId }) {
   const [userName, setUserName] = useState("");
+  const [loading, setLoading] = useState(false);
   const baseURL = "https://www.thewhitetap.com/profile/";
   const fullURL = `${baseURL}${userId}`;
   const downloadRef = useRef(null);
 
   useEffect(() => {
     const fetchUserName = async () => {
+      if (!userId) return;
+
+      setLoading(true);
+      setUserName(""); // Reset userName when userId changes
+
       try {
         const { data, error } = await supabase
           .from("social_media_data")
@@ -28,18 +36,22 @@ function ViewUserQR({ isOpen, setIsOpen, userId }) {
 
         if (error) {
           console.error("Error fetching user name:", error);
+          setUserName("Unknown User");
         } else {
-          setUserName(data.name);
+          setUserName(data.name || "Unnamed User");
         }
       } catch (err) {
         console.error("An error occurred:", err);
+        setUserName("Unknown User");
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (userId) {
+    if (isOpen) {
       fetchUserName();
     }
-  }, [userId]);
+  }, [isOpen, userId]);
 
   const handleDownload = () => {
     if (downloadRef.current) {
@@ -55,19 +67,40 @@ function ViewUserQR({ isOpen, setIsOpen, userId }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent >
+      <DialogContent className="sm:max-w-md w-full p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle>{userName}'s QR Code</DialogTitle>
-          <DialogDescription>Download or view the QR code below</DialogDescription>
+          <DialogTitle>
+            {loading ? (
+              <Skeleton className="w-32 h-6 rounded-md mb-2" />
+            ) : (
+              `${userName}'s QR Code`
+            )}
+          </DialogTitle>
+          <DialogDescription>
+            {loading ? (
+              <Skeleton className="w-full h-4 rounded-md" />
+            ) : (
+              "Download or view the QR code below."
+            )}
+          </DialogDescription>
         </DialogHeader>
-        <div className="flex justify-center mt-4" ref={downloadRef}>
-          <QRCode value={fullURL} size={256} level="H" />
-        </div>
-        <div className="flex justify-center  mt-4">
-          <Button onClick={handleDownload} className="mr-2">
+
+        {/* QR Code and Download Button */}
+        <div className="flex flex-col items-center mt-4">
+          {loading ? (
+            <Skeleton className="w-64 h-64 rounded-md" />
+          ) : (
+            <div ref={downloadRef} className="mb-4">
+              <QRCode value={fullURL} size={256} level="H" includeMargin={true} />
+            </div>
+          )}
+          <Button
+            onClick={handleDownload}
+            className="flex items-center space-x-2"
+            disabled={loading}
+          >
             Download QR Code
           </Button>
-      
         </div>
       </DialogContent>
     </Dialog>

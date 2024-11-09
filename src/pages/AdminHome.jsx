@@ -226,10 +226,10 @@ function AdminHome() {
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
+    <div className="container mx-auto p-4 sm:p-6 space-y-8">
       {/* Header with Title and Mode Toggle */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-center">
+        <h1 className="text-3xl font-bold mb-4 sm:mb-0">Admin Dashboard</h1>
         {/* You can add a ModeToggle component here if needed */}
       </div>
 
@@ -240,11 +240,11 @@ function AdminHome() {
         </CardHeader>
         <CardContent>
           {/* Search and Filter */}
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0 sm:space-x-4">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0 lg:space-x-4">
             <h1 className="text-xl font-semibold">User Management</h1>
-            <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0 md:space-x-4 w-full lg:w-auto">
               {/* Search Input */}
-              <div className="relative w-full sm:w-64">
+              <div className="relative w-full md:w-64">
                 <Input
                   placeholder="Search users..."
                   value={searchTerm}
@@ -261,7 +261,7 @@ function AdminHome() {
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
-                    className="w-full sm:w-auto justify-start text-left font-normal"
+                    className="w-full md:w-auto justify-start text-left font-normal"
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {dateRange.from ? (
@@ -300,7 +300,7 @@ function AdminHome() {
               {/* Add User Button */}
               <Button
                 variant="default"
-                className="flex items-center"
+                className="w-full md:w-auto flex items-center justify-center"
                 onClick={() => setIsAddUserModalOpen(true)}
               >
                 <Plus className="mr-2 h-4 w-4" /> Add User
@@ -310,9 +310,9 @@ function AdminHome() {
 
           {/* Users Table */}
           <div className="overflow-x-auto rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
+            <Table className="min-w-full">
+              <TableHeader className="bg-gray-100">
+                <TableRow >
                   <TableHead>Name</TableHead>
                   <TableHead>Designation</TableHead>
                   <TableHead>Join Date</TableHead>
@@ -346,7 +346,7 @@ function AdminHome() {
                         <img
                           src={user.avatar || "/default-avatar.png"} // Provide a default avatar if none exists
                           alt={user.name}
-                          className="w-8 h-8 rounded-full"
+                          className="w-8 h-8 rounded-full object-cover"
                         />
                         <span>{user.name}</span>
                       </TableCell>
@@ -364,9 +364,9 @@ function AdminHome() {
                               setSelectedUserForEdit(user);
                               setIsEditUserModalOpen(true);
                             }}
+                            aria-label="Edit"
                           >
                             <Edit className="h-4 w-4" />
-                            <span className="sr-only">Edit</span>
                           </Button>
 
                           {/* View QR Button */}
@@ -374,29 +374,29 @@ function AdminHome() {
                             variant="outline"
                             size="icon"
                             onClick={() => handleViewQR(user.id)}
+                            aria-label="View QR"
                           >
                             <QrCode className="h-4 w-4" />
-                            <span className="sr-only">View QR</span>
                           </Button>
 
                           {/* View Insights Button */}
-                          <Button
+                          {/* <Button
                             variant="outline"
                             size="icon"
                             onClick={() => handleViewInsights(user.id)}
+                            aria-label="View Insights"
                           >
                             <BarChart className="h-4 w-4" />
-                            <span className="sr-only">Insights</span>
-                          </Button>
+                          </Button> */}
 
                           {/* Delete Button */}
                           <Button
                             variant="outline"
                             size="icon"
                             onClick={() => setUserToDelete(user)}
+                            aria-label="Delete"
                           >
                             <Trash2 className="h-4 w-4" />
-                            <span className="sr-only">Delete</span>
                           </Button>
                         </div>
                       </TableCell>
@@ -408,7 +408,7 @@ function AdminHome() {
           </div>
 
           {/* Pagination Controls */}
-          <div className="flex items-center justify-between mt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between mt-4">
             <p className="text-sm text-muted-foreground">
               Showing{" "}
               {filteredUsers.length === 0
@@ -418,15 +418,15 @@ function AdminHome() {
               {Math.min(currentPage * itemsPerPage, filteredUsers.length)} of{" "}
               {filteredUsers.length} users
             </p>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 mt-2 sm:mt-0">
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
+                aria-label="Previous page"
               >
                 <ChevronLeft className="h-4 w-4" />
-                <span className="sr-only">Previous page</span>
               </Button>
               <Button
                 variant="outline"
@@ -437,9 +437,9 @@ function AdminHome() {
                   )
                 }
                 disabled={currentPage === totalPages}
+                aria-label="Next page"
               >
                 <ChevronRight className="h-4 w-4" />
-                <span className="sr-only">Next page</span>
               </Button>
             </div>
           </div>
@@ -453,9 +453,9 @@ function AdminHome() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto rounded-md border">
-            <Table>
+            <Table className="min-w-full">
               <TableHeader>
-                <TableRow>
+                <TableRow className="bg-gray-100">
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Sign-Up Date</TableHead>
@@ -510,7 +510,7 @@ function AdminHome() {
 
       {/* Alert Dialog for Deletion Confirmation */}
       <AlertDialog open={!!userToDelete} onOpenChange={() => setUserToDelete(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-lg mx-auto">
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
             <AlertDialogDescription>
@@ -519,12 +519,12 @@ function AdminHome() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="px-4 py-2">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 handleDeleteUser(userToDelete.id);
               }}
-              className="bg-red-500 hover:bg-red-600"
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2"
             >
               Delete
             </AlertDialogAction>
