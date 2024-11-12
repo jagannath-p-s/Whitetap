@@ -1,6 +1,6 @@
 // src/pages/adminwidgets/AddUser.jsx
 
-import React, { useState, Fragment, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -74,8 +74,10 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
       }
     };
 
-    fetchThemes();
-  }, []);
+    if (isOpen) {
+      fetchThemes();
+    }
+  }, [isOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -222,19 +224,23 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
 
       {/* Add User Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-3xl h-[90%]">
+        <DialogContent
+          className="sm:max-w-4xl w-full h-full sm:h-auto max-h-full sm:max-h-[90vh] p-4 sm:p-6"
+          aria-labelledby="add-user-dialog-title"
+          aria-describedby="add-user-dialog-description"
+        >
           <DialogHeader>
-            <DialogTitle>Add New User</DialogTitle>
-            <DialogDescription>
+            <DialogTitle id="add-user-dialog-title">Add New User</DialogTitle>
+            <DialogDescription id="add-user-dialog-description">
               Please fill in the details of the new user.
             </DialogDescription>
           </DialogHeader>
 
           {/* ScrollArea Wrapper */}
-          <ScrollArea className="h-[400px] mt-4">
+          <ScrollArea className="mt-4 h-full sm:h-[calc(100vh-200px)] px-2">
             <form
               onSubmit={handleSubmit}
-              className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+              className="grid grid-cols-1 px-2 sm:grid-cols-2 lg:grid-cols-3 gap-4"
             >
               {/* Name */}
               <div className="col-span-1">
@@ -242,7 +248,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
-                  Name
+                  Name <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="name"
@@ -252,6 +258,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   value={formData.name}
                   onChange={handleChange}
                   required
+                  className="mt-1"
                 />
               </div>
 
@@ -261,7 +268,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   htmlFor="email"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
-                  Email
+                  Email <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="email"
@@ -271,6 +278,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  className="mt-1"
                 />
               </div>
 
@@ -280,7 +288,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   htmlFor="password"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
-                  Password
+                  Password <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="password"
@@ -290,6 +298,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  className="mt-1"
                 />
               </div>
 
@@ -308,6 +317,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter designation"
                   value={formData.designation}
                   onChange={handleChange}
+                  className="mt-1"
                 />
               </div>
 
@@ -326,6 +336,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter phone number"
                   value={formData.phone}
                   onChange={handleChange}
+                  className="mt-1"
                 />
               </div>
 
@@ -344,6 +355,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter website URL"
                   value={formData.website}
                   onChange={handleChange}
+                  className="mt-1"
                 />
               </div>
 
@@ -362,6 +374,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter WhatsApp number"
                   value={formData.whatsapp}
                   onChange={handleChange}
+                  className="mt-1"
                 />
               </div>
 
@@ -380,6 +393,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter Facebook profile URL"
                   value={formData.facebook}
                   onChange={handleChange}
+                  className="mt-1"
                 />
               </div>
 
@@ -398,6 +412,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter Instagram profile URL"
                   value={formData.instagram}
                   onChange={handleChange}
+                  className="mt-1"
                 />
               </div>
 
@@ -416,6 +431,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter YouTube channel URL"
                   value={formData.youtube}
                   onChange={handleChange}
+                  className="mt-1"
                 />
               </div>
 
@@ -434,6 +450,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter LinkedIn profile URL"
                   value={formData.linkedin}
                   onChange={handleChange}
+                  className="mt-1"
                 />
               </div>
 
@@ -452,6 +469,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter Google Reviews link"
                   value={formData.google_reviews}
                   onChange={handleChange}
+                  className="mt-1"
                 />
               </div>
 
@@ -470,6 +488,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter UPI link"
                   value={formData.upi}
                   onChange={handleChange}
+                  className="mt-1"
                 />
               </div>
 
@@ -488,6 +507,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter Google Maps link"
                   value={formData.maps}
                   onChange={handleChange}
+                  className="mt-1"
                 />
               </div>
 
@@ -500,9 +520,9 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   Background Image
                 </Label>
                 {themesLoading ? (
-                  <Skeleton className="w-full h-10 rounded-md" />
+                  <Skeleton className="w-full h-10 rounded-md mt-1" />
                 ) : themesError ? (
-                  <p className="text-red-500">{themesError}</p>
+                  <p className="text-red-500 mt-1">{themesError}</p>
                 ) : (
                   <Select
                     value={formData.background_image}
@@ -510,7 +530,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                       handleSelectChange(value, "background_image")
                     }
                   >
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full mt-1">
                       <SelectValue placeholder="Select background image" />
                     </SelectTrigger>
                     <SelectContent>
@@ -519,7 +539,15 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                           key={theme.id}
                           value={theme.background_image_url}
                         >
-                          {theme.theme_name}
+                          {/* Theme Preview Thumbnail */}
+                          <div className="flex items-center space-x-2">
+                            <img
+                              src={theme.background_image_url}
+                              alt={`${theme.theme_name} thumbnail`}
+                              className="w-6 h-6 rounded object-cover"
+                            />
+                            <span>{theme.theme_name}</span>
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -528,7 +556,7 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
               </div>
 
               {/* Avatar */}
-              <div className="col-span-1">
+              {/* <div className="col-span-1">
                 <Label
                   htmlFor="avatar"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -542,8 +570,9 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter avatar image URL"
                   value={formData.avatar}
                   onChange={handleChange}
+                  className="mt-1"
                 />
-              </div>
+              </div> */}
 
               {/* Drive Link */}
               <div className="col-span-1">
@@ -560,14 +589,16 @@ function AddUser({ isOpen, setIsOpen, handleAddUser }) {
                   placeholder="Enter Google Drive link"
                   value={formData.drive_link}
                   onChange={handleChange}
+                  className="mt-1"
                 />
               </div>
 
               {/* Submit Button */}
-              <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex justify-end">
+              <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex justify-center sm:justify-end">
                 <Button
                   type="submit"
-                  className="mt-4 mr-4 flex items-center space-x-2"
+                  className="mt-4 w-full mb-8 sm:mb-0 flex items-center space-x-2"
+                  disabled={themesLoading || themesError}
                 >
                   <Plus className="h-4 w-4" />
                   <span>Add User</span>

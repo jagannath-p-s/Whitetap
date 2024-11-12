@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Save } from "lucide-react";
+import { Save, Ban } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -21,11 +21,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import supabase from "../../supabase"; // Ensure correct import path
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
+
 function EditUser({
   isOpen, // Boolean to control dialog visibility
   setIsOpen, // Function to close the dialog
-  users, // List of users to select from
   handleEditUser, // Function to handle editing
   selectedUserForEdit, // The user currently being edited
   setSelectedUserForEdit, // Function to set the selected user
@@ -78,38 +78,35 @@ function EditUser({
       }
     };
 
-    fetchThemes();
-  }, []);
+    if (isOpen) {
+      fetchThemes();
+    }
+  }, [isOpen]);
 
   // Populate form data when a user is selected for editing
   useEffect(() => {
-    if (selectedUserForEdit && Array.isArray(users)) {
-      const selectedUser = users.find(
-        (user) => user.id === selectedUserForEdit.id
-      );
-      if (selectedUser) {
-        setFormData({
-          name: selectedUser.name || "",
-          email: selectedUser.email || "",
-          password: "", // Typically, you wouldn't pre-fill password fields
-          designation: selectedUser.designation || "",
-          phone: selectedUser.phone || "",
-          website: selectedUser.website || "",
-          whatsapp: selectedUser.whatsapp || "",
-          facebook: selectedUser.facebook || "",
-          instagram: selectedUser.instagram || "",
-          youtube: selectedUser.youtube || "",
-          linkedin: selectedUser.linkedin || "",
-          google_reviews: selectedUser.google_reviews || "",
-          upi: selectedUser.upi || "",
-          maps: selectedUser.maps || "",
-          background_image: selectedUser.background_image || "",
-          avatar: selectedUser.avatar || "",
-          drive_link: selectedUser.drive_link || "",
-        });
-      }
+    if (selectedUserForEdit) {
+      setFormData({
+        name: selectedUserForEdit.name || "",
+        email: selectedUserForEdit.email || "",
+        password: "", // Typically, you wouldn't pre-fill password fields
+        designation: selectedUserForEdit.designation || "",
+        phone: selectedUserForEdit.phone || "",
+        website: selectedUserForEdit.website || "",
+        whatsapp: selectedUserForEdit.whatsapp || "",
+        facebook: selectedUserForEdit.facebook || "",
+        instagram: selectedUserForEdit.instagram || "",
+        youtube: selectedUserForEdit.youtube || "",
+        linkedin: selectedUserForEdit.linkedin || "",
+        google_reviews: selectedUserForEdit.google_reviews || "",
+        upi: selectedUserForEdit.upi || "",
+        maps: selectedUserForEdit.maps || "",
+        background_image: selectedUserForEdit.background_image || "",
+        avatar: selectedUserForEdit.avatar || "",
+        drive_link: selectedUserForEdit.drive_link || "",
+      });
     }
-  }, [selectedUserForEdit, users]);
+  }, [selectedUserForEdit]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -160,94 +157,25 @@ function EditUser({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-3xl h-[90%]">
+      <DialogContent
+        className="sm:max-w-4xl w-full h-full sm:h-auto max-h-full sm:max-h-[90vh] p-4 sm:p-6"
+        aria-labelledby="edit-user-dialog-title"
+        aria-describedby="edit-user-dialog-description"
+      >
         <DialogHeader>
-          <DialogTitle>Edit User</DialogTitle>
-          <DialogDescription>
+          <DialogTitle id="edit-user-dialog-title">Edit User</DialogTitle>
+          <DialogDescription id="edit-user-dialog-description">
             Modify the details of the selected user. All fields are optional except for the email.
           </DialogDescription>
         </DialogHeader>
 
-        {/* Alert Message */}
-        {alertMessage && (
-          <div
-            role="alert"
-            className={`rounded-xl border p-4 mb-4 ${
-              alertMessage.type === "success"
-                ? "border-green-100 bg-green-50"
-                : "border-red-100 bg-red-50"
-            }`}
-          >
-            <div className="flex items-start gap-4">
-              <span
-                className={`text-${
-                  alertMessage.type === "success" ? "green" : "red"
-                }-600`}
-              >
-                {alertMessage.type === "success" ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="h-6 w-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 a9 9 0 0118 0z"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="h-6 w-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                )}
-              </span>
-              <div className="flex-1">
-                <strong className="block font-medium text-gray-900">
-                  {alertMessage.message}
-                </strong>
-              </div>
-              <button
-                className="text-gray-500 transition hover:text-gray-600"
-                onClick={closeAlert}
-              >
-                <span className="sr-only">Dismiss alert</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="h-6 w-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        )}
-
+  
         {/* ScrollArea Wrapper */}
-        <ScrollArea className="h-[400px]">
-          <form onSubmit={handleSubmit} className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <ScrollArea className="mt-4 h-full sm:h-[calc(100vh-200px)] px-2">
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-1 px-2 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          >
             {/* Name */}
             <div>
               <Label htmlFor="name">Name</Label>
@@ -263,7 +191,7 @@ function EditUser({
 
             {/* Email */}
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
               <Input
                 type="email"
                 id="email"
@@ -399,7 +327,7 @@ function EditUser({
                 type="text"
                 id="google_reviews"
                 name="google_reviews"
-                placeholder="5 Stars"
+                placeholder="Enter Google Reviews link"
                 value={formData.google_reviews}
                 onChange={handleChange}
               />
@@ -435,9 +363,9 @@ function EditUser({
             <div>
               <Label htmlFor="background_image">Background Image</Label>
               {themesLoading ? (
-                <Skeleton className="w-full h-10 rounded-md" />
+                <Skeleton className="w-full h-10 rounded-md mt-1" />
               ) : themesError ? (
-                <p className="text-red-500">{themesError}</p>
+                <p className="text-red-500 mt-1">{themesError}</p>
               ) : (
                 <Select
                   onValueChange={(value) =>
@@ -445,7 +373,7 @@ function EditUser({
                   }
                   value={formData.background_image || "none"} // Default to "none" if empty
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full mt-1">
                     <SelectValue placeholder="Select Background Image" />
                   </SelectTrigger>
                   <SelectContent>
@@ -457,7 +385,15 @@ function EditUser({
                         key={theme.id}
                         value={theme.background_image_url}
                       >
-                        {theme.theme_name}
+                        {/* Theme Preview Thumbnail */}
+                        <div className="flex items-center space-x-2">
+                          <img
+                            src={theme.background_image_url}
+                            alt={`${theme.theme_name} thumbnail`}
+                            className="w-6 h-6 rounded object-cover"
+                          />
+                          <span>{theme.theme_name}</span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -466,7 +402,7 @@ function EditUser({
             </div>
 
             {/* Avatar */}
-            <div>
+            {/* <div>
               <Label htmlFor="avatar">Avatar URL</Label>
               <Input
                 type="url"
@@ -476,7 +412,7 @@ function EditUser({
                 value={formData.avatar}
                 onChange={handleChange}
               />
-            </div>
+            </div> */}
 
             {/* Drive Link */}
             <div>
@@ -493,7 +429,7 @@ function EditUser({
 
             {/* Submit Button */}
             <div className="sm:col-span-2 lg:col-span-3 flex justify-end">
-              <Button type="submit" className="flex items-center space-x-2">
+              <Button type="submit"       className="mt-4 w-full mb-8 sm:mb-0 flex items-center space-x-2">
                 <Save className="h-4 w-4" />
                 <span>Save Changes</span>
               </Button>

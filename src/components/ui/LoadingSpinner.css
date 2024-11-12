@@ -1,0 +1,52 @@
+/* LoadingSpinner.css */
+
+/* Container for the loader */
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh; /* Full screen height for centering */
+}
+
+/* Loader text styling */
+.loader-text {
+  font-size: 1.5rem; /* Default font size */
+  color: rgb(0, 0, 0);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .loader-text {
+    font-size: 2rem; /* Larger text for bigger screens */
+  }
+}
+
+/* Loader bar styling */
+.loader-bar {
+  width: 60%; /* Default width */
+  max-width: 300px; /* Limit max width */
+  height: 10px;
+  border-radius: 5px;
+  background-color: rgb(0, 0, 0);
+  animation: loader-bar-animation 2s ease-in-out infinite;
+}
+
+@media (min-width: 640px) {
+  .loader-bar {
+    width: 30%; /* Adjust width for larger screens */
+  }
+}
+
+@keyframes loader-bar-animation {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}

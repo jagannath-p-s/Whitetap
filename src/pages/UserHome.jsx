@@ -10,9 +10,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Save, Ban , Edit2, ExternalLink, BarChart2 } from "lucide-react"; // Imported Cancel icon
+import { Save, Ban, Edit2, ExternalLink, BarChart2 } from "lucide-react"; // Imported Cancel icon
 import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 // ContactItem Component
 function ContactItem({ icon: Icon, label, value, link }) {
@@ -156,12 +157,19 @@ function UserHome() {
       } catch (error) {
         console.error("Fetch User Data Error:", error);
         setError("An error occurred. Please try again.");
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchUserData();
+    // Introduce an artificial delay of 1.5 seconds
+    const fetchDataWithDelay = async () => {
+      await Promise.all([
+        fetchUserData(),
+        new Promise((resolve) => setTimeout(resolve, 1500)), // 1.5 seconds delay
+      ]);
+      setLoading(false);
+    };
+
+    fetchDataWithDelay();
   }, [signedInUserEmail]);
 
   // Fetch themes from Supabase
@@ -262,31 +270,8 @@ function UserHome() {
   // Conditional rendering based on loading and error states
   if (loading || themesLoading) {
     return (
-      <div className="flex flex-col min-h-screen justify-center items-center">
-        {/* Loading Spinner */}
-        <div className="flex flex-col items-center">
-          <svg
-            className="animate-spin h-12 w-12 text-blue-600 mb-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v8H4z"
-            ></path>
-          </svg>
-          <p className="text-lg text-gray-700">Loading...</p>
-        </div>
+      <div className="flex flex-col min-h-screen justify-center items-center bg-gray-50">
+        <LoadingSpinner />
       </div>
     );
   }
@@ -328,7 +313,7 @@ function UserHome() {
                     onClick={toggleEditing}
                     aria-label={isEditing ? "Cancel Editing" : "Edit Profile"}
                   >
-                    {isEditing ? <Ban  className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
+                    {isEditing ? <Ban className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
                   </Button>
                   <Button
                     variant="outline"
@@ -359,7 +344,6 @@ function UserHome() {
                     </Avatar>
                     {isEditing ? (
                       <div className="space-y-2 text-center">
-                       
                         <Input
                           id="name"
                           name="name"
@@ -376,10 +360,13 @@ function UserHome() {
                           placeholder="Designation"
                           className="text-center"
                         />
+
                         {/* Avatar Upload */}
                         <div className="mt-2">
-                          <Label htmlFor="avatar" className="cursor-pointer">
-                            Change Profile
+                          <Label htmlFor="avatar">
+                            <Button as="span" variant="outline" className="cursor-pointer">
+                              Change Profile
+                            </Button>
                           </Label>
                           <Input
                             id="avatar"
@@ -522,7 +509,10 @@ function UserHome() {
                               value="Visit Website"
                               link={userData.website}
                             />
-                            <ContactItem icon={ExternalLink} label="UPI" value={userData.upi} />
+                            <ContactItem icon={ExternalLink} 
+                              label="UPI" 
+                              value="Visit UPI"
+                              link={userData.upi}/>
                             <ContactItem
                               icon={ExternalLink}
                               label="Maps"
@@ -654,14 +644,14 @@ function UserHome() {
                           className="flex items-center space-x-2"
                           disabled={isSaving} // Disable button while saving
                         >
-                          <Ban  className="h-4 w-4" />
+                          <Ban className="h-4 w-4" />
                           <span>Cancel</span>
                         </Button>
 
                         {/* Save Changes Button */}
                         <Button
                           onClick={handleSaveChanges}
-                          className="flex items-center space-x-2 "
+                          className="flex items-center space-x-2"
                           disabled={isSaving} // Disable button while saving
                         >
                           <Save className="h-4 w-4" />
